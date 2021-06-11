@@ -86,37 +86,38 @@ let books = [
 
 const typeDefs = gql`
   type Book{
-    title:String!,
-    published:Int!,
-    author:String!,
-    id:ID!,
+    title:String!
+    published:Int!
+    author:String!
+    id:ID!
     genres:[String]!
   }
 
   type Author{
-    name:String!,
-    id:ID!,
-    born:String,
+    name:String!
+    id:ID!
+    born:String
     bookCount:Int!
   }
 
   type Query {
-      bookCount: Int!,
-      authorCount: Int!,
-      allBooks(author:String,genre:String):[Book!]! 
+      bookCount: Int!
+      authorCount: Int!
+      allBooks(author:String,genre:String):[Book!]!
       allAuthors: [Author!]!
+      findAuthor(name:String!):Author
   }
 
   type Mutation{
       addBook(
-        title:String!,
-        published:Int!,
-        author:String!,
+        title:String!
+        published:Int!
+        author:String!
         genres:[String]!
-      ):Book,
+      ):Book
 
       editAuthor(
-        name:String!,
+        name:String!
         setBornTo:Int
       ):Author,
   }
@@ -138,8 +139,10 @@ const resolvers = {
          
 
         },
-      allAuthors: () => authors
-
+      allAuthors: () => authors,
+      findAuthor : (root,args) => {
+            
+      } 
   },
   Mutation:{
     addBook : (root, args) => {
