@@ -3,6 +3,7 @@ const { v1: uid }= require("uuid")
 const mongoose = require("mongoose")
 const {DBUrl} = require("./utils")
 const Author = require("./models/author")
+const Book = require("./models/book")
 
 // let authors = [
 //   {
@@ -88,6 +89,7 @@ mongoose.connect(DBUrl,{
   useFindAndModify:true,
   useUnifiedTopology:true
 })
+
 const db = mongoose.connection
 db.on("error", () => {console.log("error connecting to db");})
 db.once("open",() => { console.log("Db connceted successfully");})
@@ -134,7 +136,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-      bookCount: () => books.length,
+      bookCount: () => books.collection.countDocument(),
       authorCount: () => authors.length,
       allBooks: (root, args) => {
          if(!args.author && !args.genre) return books
