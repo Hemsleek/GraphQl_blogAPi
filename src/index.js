@@ -2,8 +2,8 @@ const { ApolloServer, gql } = require('apollo-server')
 const { v1: uid }= require("uuid")
 const mongoose = require("mongoose")
 const {DBUrl} = require("./utils")
-const Author = require("./models/author")
 const Book = require("./models/book")
+const Author = require('./models/author')
 
 // let authors = [
 //   {
@@ -136,8 +136,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-      bookCount: () => books.collection.countDocument(),
-      authorCount: () => authors.length,
+      bookCount: () => book.collection.countDocument(),
+      authorCount: () => author.collection.countDocument(),
       allBooks: (root, args) => {
          if(!args.author && !args.genre) return books
 
@@ -150,8 +150,9 @@ const resolvers = {
          
 
         },
-      allAuthors: () => authors,
-      findAuthor : (root,args) => {
+      allAuthors: () => 
+        Author.find({}),
+      findAuthor : (root, args) => {
             
       } 
   },
