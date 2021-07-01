@@ -136,8 +136,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-      bookCount: () => book.collection.countDocument(),
-      authorCount: () => author.collection.countDocument(),
+      bookCount: () => Book.collection.countDocuments(),
+      authorCount: () => Author.collection.countDocuments(),
       allBooks: (root, args) => {
          if(!args.author && !args.genre) return books
 
@@ -150,25 +150,24 @@ const resolvers = {
          
 
         },
-      allAuthors: () => 
-        Author.find({}),
+      allAuthors: () => Author.find({}),
       findAuthor : (root, args) => {
-            
+          return Author.findOne(args)  
       } 
   },
   Mutation:{
-    addBook : (root, args) => {
-        const authorExist = authors.find(author => author.name === args.author)
+    addBook : async(root, args) => {
+        const authorExist = await Author.findOne({name:args.author})
         if(!authorExist){
 
-            authors = authors.concat({
-                    name: args.author,
-                    id:uid()
-                })  
+            let freshAuthor= new Author({
+              name:args.author,
+            })
+
+           await freshAuthor.save() 
         }
-        const book = {...args,id:uid()}
-        books = books.concat(book)
-        return book
+        const book = new Book({...args})
+        return book.save()
     },
     editAuthor: (root, args) => {
 
