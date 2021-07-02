@@ -188,7 +188,10 @@ const resolvers = {
   },
 
   Author: {
-      bookCount: (root) => books.filter(book => book.author === root.name).length,
+      bookCount: async(root) => {
+        let authorBooks = await Book.find({author:root.name})
+        return authorBooks.length
+      }
   }
 }
 
