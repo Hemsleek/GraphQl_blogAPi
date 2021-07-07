@@ -18,6 +18,16 @@ db.once("open",() => { console.log("Db connceted successfully");})
 
 
 const typeDefs = gql`
+  type User{
+    username:String!
+    favoriteGenre:String!
+    id:ID!
+  }
+
+  type Token{
+    value:String!
+  }
+
   type Book{
     title:String!
     published:Int!
@@ -39,6 +49,7 @@ const typeDefs = gql`
       allBooks(author:String,genre:String):[Book!]!
       allAuthors: [Author!]!
       findAuthor(name:String!):Author
+      me:User
   }
 
   type Mutation{
@@ -53,6 +64,16 @@ const typeDefs = gql`
         name:String!
         setBornTo:Int
       ):Author,
+
+      createUser(
+        username:String!
+        favouriteGenre:String!
+      ):User,
+
+      login(
+        username:String!
+        password:String!
+      ):Token
   }
 `
 
@@ -75,7 +96,8 @@ const resolvers = {
       allAuthors: () => Author.find({}),
       findAuthor : (root, args) => {
           return Author.findOne(args)  
-      } 
+      } ,
+      me:
   },
   Mutation:{
     addBook : async(root, args) => {
