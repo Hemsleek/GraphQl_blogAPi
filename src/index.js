@@ -5,6 +5,7 @@ const {DBUrl} = require("./utils")
 const Book = require("./models/book")
 const Author = require('./models/author')
 
+
 mongoose.connect(DBUrl,{
   useUnifiedTopology:true,
   useCreateIndex:true,
@@ -97,7 +98,7 @@ const resolvers = {
       findAuthor : (root, args) => {
           return Author.findOne(args)  
       } ,
-      me:
+      
   },
   Mutation:{
     addBook : async(root, args) => {
