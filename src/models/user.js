@@ -7,7 +7,8 @@ const userSchema = new Schema({
         unique:true,
         minLength:3,
         required:true
-    }
+    },
+    
 })
 
 userSchema.plugin(uniqueValidator)

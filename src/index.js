@@ -4,6 +4,7 @@ const mongoose = require("mongoose")
 const {DBUrl} = require("./utils")
 const Book = require("./models/book")
 const Author = require('./models/author')
+const User = require('./models/user')
 
 
 mongoose.connect(DBUrl,{
@@ -131,14 +132,21 @@ const resolvers = {
 
         return authorExist
   },
+  createUser: async(root,args) => {
+      const newUser = new User({
+        username:args.username
+      })
+      return newUser.save()
+  }
+},
   Author: {
       bookCount: async(root) => {
         let authorBooks = await Book.find({author:root.name})
         return authorBooks.length
       }
   }
+
   }
-}
 
 const server = new ApolloServer({
   typeDefs,
