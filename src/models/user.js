@@ -8,7 +8,11 @@ const userSchema = new Schema({
         minLength:3,
         required:true
     },
-    
+    favoriteGenre:{
+        type:String,
+        required:true
+    }
+
 })
 
 userSchema.plugin(uniqueValidator)

@@ -1,10 +1,12 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uid }= require("uuid")
 const mongoose = require("mongoose")
-const {DBUrl} = require("./utils")
+const {DBUrl, tokenSecret} = require("./utils")
 const Book = require("./models/book")
 const Author = require('./models/author')
 const User = require('./models/user')
+const jwt = require("jsonwebtoken")
+const user = require('./models/user')
 
 
 mongoose.connect(DBUrl,{
@@ -132,11 +134,25 @@ const resolvers = {
 
         return authorExist
   },
-  createUser: async(root,args) => {
-      const newUser = new User({
-        username:args.username
-      })
+  createUser:(root,args) => {
+      const newUser = new User({...args})
       return newUser.save()
+        .catch(err => {
+          throw new UserInputError(err.message, {
+            invalidArgs:args
+          })
+        })
+  },
+  login: async (root,args) => {
+      const user = await User.findOne({username: args.username})
+
+      if(!user || args.password!== "password") throw new UserInputError('wrong credentials')
+
+      const userToken =  jwt.sign({
+        username: user.username,
+        id:user._id
+      }, tokenSecret)
+      return {value: userToken}
   }
 },
   Author: {
