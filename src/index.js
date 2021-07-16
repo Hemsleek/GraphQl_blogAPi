@@ -167,6 +167,15 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context:async({req}) => {
+    const auth = req? req.headers.authorization : null
+    if(auth && auth.toLowerCase().startsWith('Bearer')){
+      const decodedToken = jwt.verify(auth.subatring(7), tokenSecret)
+    }
+    const currentUser = await User.findById(decodedToken.id)
+
+    return {currentUser}
+  }
 })
 
 server.listen().then(({ url }) => {
