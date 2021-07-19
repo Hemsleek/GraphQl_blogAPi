@@ -109,7 +109,8 @@ const resolvers = {
         if(!currentUser) {
           throw AuthenticationError("not authenticated")
         }
-        const authorExist = await Author.findOne({name:args.author})
+        try {
+          const authorExist = await Author.findOne({name:args.author})
         if(!authorExist){
 
             let freshAuthor= new Author({
@@ -120,9 +121,15 @@ const resolvers = {
         }
         const book = new Book({...args})
         return book.save()
+        } catch (error) {
+          
+        }
+        
     },
     editAuthor: async(root, args,context) => {
-
+      if (!context.currentUser) {
+        throw new AuthenticationError("not authenticated")
+      }
         if(!args.setBornTo) return null
         const authorExist = await Author.find({name:args.name})
         // if(!authorExist) return null
