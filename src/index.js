@@ -101,13 +101,16 @@ const resolvers = {
       findAuthor : (root, args) => {
           return Author.findOne(args)  
       } ,
+      me:  (root, args, {currentUser}) => {
+          return currentUser
+      }
       
   },
   Mutation:{
     addBook : async(root, args, context) => {
         const currentUser = context.currentUser
         if(!currentUser) {
-          throw AuthenticationError("not authenticated")
+          throw new AuthenticationError("not authenticated")
         }
         try {
           const authorExist = await Author.findOne({name:args.author})
