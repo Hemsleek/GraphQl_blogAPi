@@ -1,19 +1,18 @@
 const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
-const { v1: uid }= require("uuid")
 const mongoose = require("mongoose")
 const {DBUrl, tokenSecret} = require("./utils")
 const Book = require("./models/book")
 const Author = require('./models/author')
 const User = require('./models/user')
 const jwt = require("jsonwebtoken")
-const user = require('./models/user')
 
 
 mongoose.connect(DBUrl,{
   useUnifiedTopology:true,
   useCreateIndex:true,
   useFindAndModify:true,
-  useUnifiedTopology:true
+  useUnifiedTopology:true,
+  useNewUrlParser:true,
 })
 
 const db = mongoose.connection
@@ -185,14 +184,15 @@ const server = new ApolloServer({
     let auth = req? req.headers.authorization : null
     if(auth && auth.toLowerCase().startsWith('Bearer')){
       auth = auth.substring(7)
-      const decodedToken = jwt.verify(auth, tokenSecret)
-    }
+      const decodedToken= jwt.verify(auth, tokenSecret)
+    
     const currentUser = await User.findById(decodedToken.id)
 
     return {currentUser}
+  }
   }
 })
 
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
-})
+}).catch(err => console.log(err))
